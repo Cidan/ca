@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+cert_name="CA"
+current_dir=`pwd`
+full_path=$current_dir/$cert_name
+# Configure/edit this line to your specifics.
+subj="/C=US/ST=California/L=Los Angeles/O=yourname.com/CN=$cert_name"
+echo "k, I'm making a cert called $cert_name in $full_path"
+mkdir -p $full_path
+
+# Create the root CA
+openssl dhparam -outform pem -out $full_path/dh.pem 2048
+openssl genrsa -out $full_path/ca.key 2048
+openssl req -x509 -subj "$subj" -new -nodes -key $full_path/ca.key -days 2048 -out $full_path/ca.crt
+cat $full_path/ca.crt $full_path/ca.key > $full_path/ca.pem
+touch CA/index.txt
+echo 1000 > CA/crlnumber
+echo 1000 > CA/serial
+mkdir CA/crl
+mkdir CA/private
+mkdir CA/certs
+mkdir CA/newcerts
+openssl ca -gencrl -config openssl.cnf -out CA/crl/crl.pem

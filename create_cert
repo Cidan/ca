@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+NAME=$1
+
+if [[ $NAME == "" ]]; then
+  echo "You must specify a name for the cert."
+  exit 1
+fi
+
+if [[ -f CA/private/$NAME.key ]]; then
+  echo "A cert with the name $NAME already exists. You must revoke this key if you want to make one with the same name."
+  exit 1
+fi
+
+echo "k, I'm making a cert called $NAME"
+openssl genrsa -out CA/private/$NAME.key 2048
+openssl req -new -subj "/C=US/ST=California/L=Venice/O=whisper.sh/CN=$NAME" -key CA/private/$NAME.key -out CA/certs/$NAME.csr
+openssl ca -batch -config openssl.cnf -extensions usr_cert -notext -md sha256 -in CA/certs/$NAME.csr -out CA/certs/$NAME.crt
+cat CA/certs/$NAME.crt CA/private/$NAME.key > CA/private/$NAME.pem
+exit 0

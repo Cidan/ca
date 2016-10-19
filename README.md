@@ -34,3 +34,7 @@ The certificate will be deleted, and entered into the revocation database in the
 ## Starting Over
 
 Simply delete the `CA` directory to delete all certs, CA, and databases, and re-run the `create_ca` script.
+
+## TODO
+
+Move more of the CA config into the openssl.cnf file.

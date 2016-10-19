@@ -1,11 +1,12 @@
 #!/bin/bash
 NAME=$1
+cert_name="CA"
 if [[ $NAME == "" ]]; then
   echo "You must specify a name for the cert."
   exit 1
 fi
 
-openssl ca -config openssl.cnf -revoke CA/certs/$NAME.crt
-openssl ca -config openssl.cnf -gencrl -out CA/crl/crl.pem
-rm -f CA/certs/$NAME.*
-rm -f CA/private/$NAME.*
+openssl ca -config openssl.cnf -revoke $cert_name/certs/$NAME.crt
+openssl ca -config openssl.cnf -gencrl -out $cert_name/crl/crl.pem
+rm -f $cert_name/certs/$NAME.*
+rm -f $cert_name/private/$NAME.*

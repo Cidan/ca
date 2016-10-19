@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 NAME=$1
+cert_name="CA"
+subj="/C=US/ST=California/L=Los Angeles/O=yourname.com/CN=$NAME"
 
 if [[ $NAME == "" ]]; then
   echo "You must specify a name for the cert."
@@ -13,8 +15,8 @@ if [[ -f CA/private/$NAME.key ]]; then
 fi
 
 echo "k, I'm making a cert called $NAME"
-openssl genrsa -out CA/private/$NAME.key 2048
-openssl req -new -subj "/C=US/ST=California/L=Venice/O=whisper.sh/CN=$NAME" -key CA/private/$NAME.key -out CA/certs/$NAME.csr
-openssl ca -batch -config openssl.cnf -extensions usr_cert -notext -md sha256 -in CA/certs/$NAME.csr -out CA/certs/$NAME.crt
-cat CA/certs/$NAME.crt CA/private/$NAME.key > CA/private/$NAME.pem
+openssl genrsa -out $cert_name/private/$NAME.key 2048
+openssl req -new -subj "$subj" -key $cert_name/private/$NAME.key -out $cert_name/certs/$NAME.csr
+openssl ca -batch -config openssl.cnf -extensions usr_cert -notext -md sha256 -in $cert_name/certs/$NAME.csr -out $cert_name/certs/$NAME.crt
+cat $cert_name/certs/$NAME.crt $cert_name/private/$NAME.key > $cert_name/private/$NAME.pem
 exit 0
